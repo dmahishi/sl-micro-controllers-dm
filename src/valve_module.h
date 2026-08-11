@@ -87,14 +87,14 @@ class ValveModule final : public Module
         bool SetCustomParameters() override
         {
             // Attempts to extract the received parameters
-            return _communication.ExtractModuleParameters(_custom_parameters);
+            return ExtractParameters(_custom_parameters);
         }
 
         /// Resolves and executes the currently active command.
         bool RunActiveCommand() override
         {
             // Depending on the currently active command, executes the necessary logic.
-            switch (static_cast<kModuleCommands>(GetActiveCommand()))
+            switch (static_cast<kModuleCommands>(get_active_command()))
             {
                 // Pulse
                 case kModuleCommands::kSendPulse: Pulse(); return true;
@@ -157,7 +157,7 @@ class ValveModule final : public Module
         /// Cycles opening and closing the valve to deliver the precise amount of fluid.
         void Pulse()
         {
-            switch (execution_parameters.stage)
+            switch (get_command_stage())
             {
                 // Opens the valve
                 case 1:

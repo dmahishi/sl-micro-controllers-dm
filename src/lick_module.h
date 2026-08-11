@@ -73,14 +73,14 @@ class LickModule final : public Module
             // Extracts the received parameters into the _custom_parameters structure of the class. If extraction fails,
             // returns false. This instructs the Kernel to execute the necessary steps to send an error message to the
             // PC.
-            return _communication.ExtractModuleParameters(_custom_parameters);
+            return ExtractParameters(_custom_parameters);
         }
 
         /// Executes the currently active command.
         bool RunActiveCommand() override
         {
             // Depending on the currently active command, executes the necessary logic.
-            switch (static_cast<kModuleCommands>(GetActiveCommand()))
+            switch (static_cast<kModuleCommands>(get_active_command()))
             {
                 // CheckState
                 case kModuleCommands::kCheckState: CheckState(); return true;
@@ -102,11 +102,7 @@ class LickModule final : public Module
 
             // Notifies the PC about the initial sensor state. Primarily, this is needed to support data source
             // time-alignment during post-processing.
-            SendData(
-                static_cast<uint8_t>(kCustomStatusCodes::kChanged),
-                kPrototypes::kOneUint16,
-                0
-            );
+            SendData(static_cast<uint8_t>(kCustomStatusCodes::kChanged), static_cast<uint16_t>(0));
 
             return true;
         }
@@ -136,7 +132,7 @@ class LickModule final : public Module
             // Evaluates the state of the pin. Averages the requested number of readouts to produce the final
             // analog signal value. Note, since we statically configure the controller to use 10-14 bit ADC resolution,
             // this value should not use the full range of the 16-bit uint variable.
-            const uint16_t signal = AnalogRead(kPin, _custom_parameters.average_pool_size); 
+            const uint16_t signal = AnalogRead<kPin>(_custom_parameters.average_pool_size);
 
             // Calculates the absolute difference between the current signal and the previous readout. This is used
             // to ensure only significant signal changes are reported to the PC. Note, although we are casting both to
@@ -159,11 +155,7 @@ class LickModule final : public Module
             if (signal >= _custom_parameters.signal_threshold)
             {
                 // Sends the detected signal to the PC.
-                SendData(
-                    static_cast<uint8_t>(kCustomStatusCodes::kChanged),
-                    kPrototypes::kOneUint16,
-                    signal
-                );
+                SendData(static_cast<uint8_t>(kCustomStatusCodes::kChanged), signal);
                 previous_zero = false;
             }
 
@@ -172,11 +164,7 @@ class LickModule final : public Module
             {
                 if (!previous_zero)
                 {
-                    SendData(
-                        static_cast<uint8_t>(kCustomStatusCodes::kChanged),
-                        kPrototypes::kOneUint16,
-                        0
-                    );
+                    SendData(static_cast<uint8_t>(kCustomStatusCodes::kChanged), static_cast<uint16_t>(0));
                     previous_zero = true;
                 }
             }
