@@ -26,7 +26,8 @@ Communication axmc_communication(Serial);  // NOLINT(*-interfaces-global-init)
 
 #include "valve_module.h"
 #include "lick_module.h"
-#include "analog_module.h"
+// #include "analog_module.h"
+#include "sine_module.h"
 
 constexpr uint8_t kControllerID = 111;
 constexpr uint32_t kKeepAliveInterval = 1000;  // 1 second == 1000 ms
@@ -37,14 +38,17 @@ ValveModule<9,  true> right_valve(1, 2, axmc_communication);
 LickModule<22> left_lick_sensor(2, 1, axmc_communication);
 LickModule<23>  right_lick_sensor(2, 2, axmc_communication);
 
-AnalogModule<14> analog_signal(3, 1, axmc_communication);
+// AnalogModule<14> analog_signal(3, 1, axmc_communication);
+
+SineModule<14> sine_wave_test(4, 1, axmc_communication);
 
 Module* modules[] = {
     &left_valve,
     &right_valve,
     &left_lick_sensor,
     &right_lick_sensor,
-    &analog_signal
+    // &analog_signal,
+    &sine_wave_test
 };
 
 // Instantiates the Kernel class using the assets instantiated above.

@@ -71,7 +71,7 @@ class AnalogModule final : public Module
             pinModeFast(kPin, INPUT_PULLDOWN);
 
             // Resets the custom_parameters structure fields to their default values. Assumes 12-bit ADC resolution.
-            _custom_parameters.signal_threshold  = 30;  // Set to zero so that any photometry signal can be detected. Change this to filter out noise
+            _custom_parameters.signal_threshold  = 0;  // Set to zero so that any photometry signal can be detected. Change this to filter out noise
             _custom_parameters.average_pool_size = 0;    // Better to have at 0 because Teensy already does this
 
             // Notifies the PC about the initial analog state input. Primarily, this is needed to support data source
@@ -87,7 +87,7 @@ class AnalogModule final : public Module
         /// Stores custom addressable runtime parameters of the module.
         struct CustomRuntimeParameters
         {
-                uint16_t signal_threshold = 30;  ///< The lower boundary for signals to be reported to PC.
+                uint16_t signal_threshold = 0;  ///< The lower boundary for signals to be reported to PC.
                 uint8_t average_pool_size = 0;    ///< The number of readouts to average into pin state value.
         } PACKED_STRUCT _custom_parameters;
 
