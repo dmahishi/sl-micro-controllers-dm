@@ -124,9 +124,12 @@ class SineModule final : public Module
         /// Computes and outputs the sine value for the current phase index, then advances to the next index.
         void NextSample()
         {
+            // Guards against a division by zero if sample_count was set to 0 by the PC, since sample_count is a
+            // runtime parameter not otherwise validated by ExtractParameters().
+            const uint16_t sample_count = _custom_parameters.sample_count > 0 ? _custom_parameters.sample_count : 1;
+
             const auto angle =
-                static_cast<float>(TWO_PI) * static_cast<float>(_phase_index) /
-                static_cast<float>(_custom_parameters.sample_count);
+                static_cast<float>(TWO_PI) * static_cast<float>(_phase_index) / static_cast<float>(sample_count);
 
             // Scales the [-1.0, 1.0] sine value by the requested amplitude and centers it on the requested offset.
             const auto duty = static_cast<int16_t>(
@@ -142,7 +145,7 @@ class SineModule final : public Module
 
             // Advances to the next sample, wrapping back to 0 after completing a full period.
             _phase_index++;
-            if (_phase_index >= _custom_parameters.sample_count) _phase_index = 0;
+            if (_phase_index >= sample_count) _phase_index = 0;
 
             CompleteCommand();
         }
