@@ -40,7 +40,7 @@ LickModule<23>  right_lick_sensor(2, 2, axmc_communication);
 
 // AnalogModule<14> analog_signal(3, 1, axmc_communication);
 
-SineModule<14> sine_wave_test(4, 1, axmc_communication);
+SineModule<0x60> sine_wave_test(4, 1, axmc_communication);  // 0x60: MCP4725 default address (A0 tied low).
 
 Module* modules[] = {
     &left_valve,
