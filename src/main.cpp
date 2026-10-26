@@ -26,6 +26,7 @@ Communication axmc_communication(Serial);  // NOLINT(*-interfaces-global-init)
 
 #include "valve_module.h"
 #include "lick_module.h"
+#include "servo_module.h"
 // #include "analog_module.h"
 // #include "sine_module.h"
 
@@ -38,6 +39,9 @@ ValveModule<9,  true> right_valve(1, 2, axmc_communication);
 LickModule<22> left_lick_sensor(2, 1, axmc_communication);
 LickModule<23>  right_lick_sensor(2, 2, axmc_communication);
 
+// Moves the lick spout in and out. Pin 2 carries the servo signal; power the servo from a separate 5-6 V supply.
+ServoModule<2> spout_servo(5, 1, axmc_communication);
+
 // AnalogModule<14> analog_signal(3, 1, axmc_communication);
 
 // SineModule<0x60> sine_wave_test(4, 1, axmc_communication);  // 0x60: MCP4725 default address (A0 tied low).
@@ -45,7 +49,8 @@ LickModule<23>  right_lick_sensor(2, 2, axmc_communication);
 Module* modules[] = {
     &left_valve,
     // &right_valve,
-    &left_lick_sensor
+    &left_lick_sensor,
+    &spout_servo
     // &right_lick_sensor,
     // &analog_signal,
     // &sine_wave_test
